@@ -1,0 +1,25 @@
+language: generic
+sudo: required
+services:
+ - docker
+ 
+before_install:
+ - docker build -t sharanroks/complex-test -f ./client/Dokcerfile.dev ./client
+ 
+script:
+ - docker run sharanroks/complex-test npm test -- --coverage
+ 
+after_success:
+ - docker build -t sharanroks/multi-client ./client
+ - docker build -t sharanroks/multi-nginx ./nginx
+ - docker build -t sharanroks/multi-server ./server
+ - docker build -t sharanroks/multi-worker ./worker
+ 
+ #Login to docker cli
+ -echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+ 
+ #Take images and push to docker hub
+ - docker push sharanroks/multi-client
+ - docker push sharanroks/multi-nginx
+ - docker push sharanroks/multi-server
+ - docker push sharanroks/multi-worker
