@@ -1,10 +1,10 @@
-sudo: required
 language: generic
+sudo: required
 services:
  - docker
  
 before_install:
- - docker build -t sharanroks/complex-test -f ./client/Dokcerfile.dev ./client
+ - docker build -t sharanroks/complex-test -f ./client/Dockerfile.dev ./client
  
 script:
  - docker run -e CI=true sharanroks/complex-test npm test -- --coverage
